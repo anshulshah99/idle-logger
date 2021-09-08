@@ -34,6 +34,28 @@ by Format->Untabify Region and specify the number of columns used by each tab.
 """
 
 
+def encrypt(text, s):
+    result = ""
+    alphabet = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWYZ'
+
+    # traverse text
+    for i in range(len(text)):
+
+        char = text[i]
+        index = alphabet.find(char)
+        if index == -1:
+            # Character not found
+            result += char
+        # Encrypt uppercase characters
+        else:
+            if (char.isupper()):
+                result += chr((ord(char) + s - 65) % 26 + 65)
+            # Encrypt lowercase characters
+            else:
+                result += chr((ord(char) + s - 97) % 26 + 97)
+    return result
+
+
 class ScriptBinding:
 
     def __init__(self, editwin):
@@ -99,15 +121,16 @@ class ScriptBinding:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         lines.append(current_time)
-        #filename = self.editwin.io.filename
         clean_file = filename[:-2] + "txt"
         f = open(clean_file, "a")
-        f.writelines("\nSTART COMPILATION EVENT\n")
-        for l in lines:
-            f.write(l)
+        f.write("\n")
+        f.write(encrypt("START COMPILATION EVENT", 17))
+        f.write("\n")
+        for l in lines[:-1]:
+            f.write(encrypt(l, 17))
             f.write("\n")
-        #f.writelines(lines)
-        f.writelines("\nEND COMPILATION EVENT\n")
+        f.write(encrypt("END COMPILATION EVENT", 17))
+        f.write("\n")
         f.close()
         text = editwin.text
         text.tag_remove("ERROR", "1.0", "end")
@@ -119,7 +142,8 @@ class ScriptBinding:
             lineno = getattr(value, 'lineno', '') or 1
             offset = getattr(value, 'offset', '') or 0
             f = open(clean_file, "a")
-            f.writelines("\nError message before compilation:\n")
+            f.write(encrypt("Error message before compilation:", 17))
+            f.write("\n")
             f.write(msg)
             f.close()
             if offset == 0:

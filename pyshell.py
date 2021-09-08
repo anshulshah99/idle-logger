@@ -66,6 +66,28 @@ PORT = 0  # someday pass in host, port for remote debug capability
 # checking user's code.
 warning_stream = sys.__stderr__  # None, at least on Windows, if no console.
 
+
+def encrypt(text, s):
+    result = ""
+    alphabet = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWYZ'
+
+    # traverse text
+    for i in range(len(text)):
+
+        char = text[i]
+        index = alphabet.find(char)
+        if index == -1:
+            # Character not found
+            result += char
+        # Encrypt uppercase characters
+        else:
+            if (char.isupper()):
+                result += chr((ord(char) + s - 65) % 26 + 65)
+            # Encrypt lowercase characters
+            else:
+                result += chr((ord(char) + s - 97) % 26 + 97)
+    return result
+
 def idle_showwarning(
         message, category, filename, lineno, file=None, line=None):
     """Show Idle-format warning (after replacing warnings.showwarning).
@@ -588,10 +610,7 @@ class ModifiedInterpreter(InteractiveInterpreter):
             self.active_seq = None
             how, what = response
             console = self.tkconsole.console
-            #f = open("/Users/anshul/Documents/test_logging.txt", "a")
-            #f.writelines(str(repr(what)))
-            #f.writelines("\n")
-            #f.close()
+
             if how == "OK":
                 if what is not None:
                     print(repr(what), file=console)
@@ -666,10 +685,6 @@ class ModifiedInterpreter(InteractiveInterpreter):
                     source = (f"__file__ = r'''{os.path.abspath(filename)}'''\n"
                               + source + "\ndel __file__")
         try:
-            #f = open("/Users/anshul/Documents/test_logging.txt", "a")
-            #f.writelines(str(source))
-            #f.writelines("\n")
-            #f.close()
             code = compile(source, filename, "exec")
         except (OverflowError, SyntaxError):
             self.tkconsole.resetoutput()
@@ -1301,7 +1316,7 @@ class PyShell(OutputWindow):
     def resetoutput(self):
         source = self.text.get("iomark", "end-1c")
         f = open(self.clean_file, "a")
-        f.writelines(source)
+        f.writelines(encrypt(source, 17))
         f.close()
         if self.history:
             self.history.store(source)
@@ -1313,16 +1328,15 @@ class PyShell(OutputWindow):
 
     def write(self, s, tags=()):
         try:
-
             if s.find("RESTART") > -1:
                 self.clean_file = s.split()[2][:-2] + "txt"
-                #f.writelines(self.clean_file)
                 f = open(self.clean_file, "a")
-                f.writelines("Output:\n")
+                f.write(encrypt("Output:", 17))
+                f.write("\n")
                 f.close()
             else:
                 f = open(self.clean_file, "a")
-                f.writelines(s)
+                f.writelines(encrypt(s, 17))
                 f.close()
 
             self.text.mark_gravity("iomark", "right")
