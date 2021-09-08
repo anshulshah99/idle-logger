@@ -1313,17 +1313,13 @@ class PyShell(OutputWindow):
 
     def write(self, s, tags=()):
         try:
-            #f = open("/Users/anshul/Documents/test_logging.txt", "a")
-            #f.writelines(s)
-            #clean_file = s.split()[2][:-2] + "txt"
+
             if s.find("RESTART") > -1:
                 self.clean_file = s.split()[2][:-2] + "txt"
                 #f.writelines(self.clean_file)
                 f = open(self.clean_file, "a")
-                f.writelines("Output of Compilation\n")
+                f.writelines("Output:\n")
                 f.close()
-            #elif s.find("for more information") > -1:
-                #f.writelines("Open IDLE Event")
             else:
                 f = open(self.clean_file, "a")
                 f.writelines(s)

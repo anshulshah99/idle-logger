@@ -101,7 +101,6 @@ class ScriptBinding:
         lines.append(current_time)
         #filename = self.editwin.io.filename
         clean_file = filename[:-2] + "txt"
-
         f = open(clean_file, "a")
         f.writelines("\nSTART COMPILATION EVENT\n")
         for l in lines:
@@ -110,7 +109,6 @@ class ScriptBinding:
         #f.writelines(lines)
         f.writelines("\nEND COMPILATION EVENT\n")
         f.close()
-
         text = editwin.text
         text.tag_remove("ERROR", "1.0", "end")
         try:
