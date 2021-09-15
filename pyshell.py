@@ -1316,7 +1316,7 @@ class PyShell(OutputWindow):
     def resetoutput(self):
         source = self.text.get("iomark", "end-1c")
         f = open(self.clean_file, "a")
-        f.writelines(encrypt(source, 17))
+        f.write(''.join(format(ord(i), '08b') for i in source))
         f.close()
         if self.history:
             self.history.store(source)
@@ -1331,12 +1331,12 @@ class PyShell(OutputWindow):
             if s.find("RESTART") > -1:
                 self.clean_file = s.split()[2][:-2] + "txt"
                 f = open(self.clean_file, "a")
-                f.write(encrypt("Output:", 17))
-                f.write("\n")
+                f.write(''.join(format(ord(i), '08b') for i in "Output:\n"))
                 f.close()
             else:
                 f = open(self.clean_file, "a")
-                f.writelines(encrypt(s, 17))
+                f.write(''.join(format(ord(i), '08b') for i in s))
+
                 f.close()
 
             self.text.mark_gravity("iomark", "right")

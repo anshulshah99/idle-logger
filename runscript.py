@@ -14,6 +14,7 @@ import tabnanny
 import time
 import tokenize
 from datetime import datetime
+from datetime import date
 
 from tkinter import messagebox
 
@@ -119,18 +120,23 @@ class ScriptBinding:
         head, tail, chars, lines = self.formatter.get_region()
         self.text.tag_remove('sel', '1.0', 'end')
         now = datetime.now()
+        today = date.today()
+        today = today.strftime("%m/%d/%y")
         current_time = now.strftime("%H:%M:%S")
         lines.append(current_time)
         clean_file = filename[:-2] + "txt"
         f = open(clean_file, "a")
-        f.write("\n")
-        f.write(encrypt("START COMPILATION EVENT", 17))
-        f.write("\n")
+        f.write(format(ord("\n"), '08b'))
+        f.write(''.join(format(ord(i), '08b') for i in "START COMPILATION EVENT"))
         for l in lines[:-1]:
-            f.write(encrypt(l, 17))
-            f.write("\n")
-        f.write(encrypt("END COMPILATION EVENT", 17))
-        f.write("\n")
+            f.write(format(ord("\n"), '08b'))
+            f.write(''.join(format(ord(i), '08b') for i in l))
+            #f.write(format(ord("\n"), '08b'))
+        f.write(''.join(format(ord(i), '08b') for i in "END COMPILATION EVENT\t"))
+        f.write(''.join(format(ord(i), '08b') for i in today))
+        f.write(format(ord("\t"), '08b'))
+        f.write(''.join(format(ord(i), '08b') for i in current_time))
+        f.write(format(ord("\n"), '08b'))
         f.close()
         text = editwin.text
         text.tag_remove("ERROR", "1.0", "end")
@@ -142,9 +148,10 @@ class ScriptBinding:
             lineno = getattr(value, 'lineno', '') or 1
             offset = getattr(value, 'offset', '') or 0
             f = open(clean_file, "a")
-            f.write(encrypt("Error message before compilation:", 17))
-            f.write("\n")
-            f.write(msg)
+            #f.write(encrypt("Error message before compilation:", 17))
+            f.write(''.join(format(ord(i), '08b') for i in "Error message before compilation:"))
+            f.write(format(ord("\n"), '08b'))
+            f.write(''.join(format(ord(i), '08b') for i in msg))
             f.close()
             if offset == 0:
                 lineno += 1  #mark end of offending line
