@@ -895,7 +895,7 @@ class PyShell(OutputWindow):
             flist = PyShellFileList(root)
 
         OutputWindow.__init__(self, flist, None, None)
-        self.clean_file = "/Users/anshul/Documents/default_logging.txt"
+        self.clean_file = "/Users/anshul/Documents/default_logging.bin"
 
         self.usetabs = True
         # indentwidth must be 8 when using tabs.  See note in EditorWindow:
@@ -1315,8 +1315,9 @@ class PyShell(OutputWindow):
 
     def resetoutput(self):
         source = self.text.get("iomark", "end-1c")
-        f = open(self.clean_file, "a")
-        f.write(''.join(format(ord(i), '08b') for i in source))
+        f = open(self.clean_file, "ab")
+        st = bytes(source, encoding='utf-8')
+        f.write(st)
         f.close()
         if self.history:
             self.history.store(source)
@@ -1329,15 +1330,18 @@ class PyShell(OutputWindow):
     def write(self, s, tags=()):
         try:
             if s.find("RESTART") > -1:
-                self.clean_file = s.split()[2][:-2] + "txt"
-                f = open(self.clean_file, "a")
-                f.write(''.join(format(ord(i), '08b') for i in "Output:\n"))
+                self.clean_file = s.split()[2][:-2] + "bin"
+                f = open(self.clean_file, "ab")
+                #f.write(b"{}".format(current_time))
+                f.write(b"Output:\n")
                 f.close()
-            else:
-                f = open(self.clean_file, "a")
-                f.write(''.join(format(ord(i), '08b') for i in s))
-
-                f.close()
+            #else:
+                #if "default" in self.clean_file:
+                #    pass
+                #else:
+                #f = open(self.clean_file, "ab")
+                #f.write(b"{}".format(s))
+                #f.close()
 
             self.text.mark_gravity("iomark", "right")
             count = OutputWindow.write(self, s, tags, "iomark")

@@ -124,19 +124,21 @@ class ScriptBinding:
         today = today.strftime("%m/%d/%y")
         current_time = now.strftime("%H:%M:%S")
         lines.append(current_time)
-        clean_file = filename[:-2] + "txt"
-        f = open(clean_file, "a")
-        f.write(format(ord("\n"), '08b'))
-        f.write(''.join(format(ord(i), '08b') for i in "START COMPILATION EVENT"))
+        clean_file = filename[:-2] + "bin"
+        f = open(clean_file, "ab")
+        f.write(b"\n")
+        f.write(b"START COMPILATION EVENT")
         for l in lines[:-1]:
-            f.write(format(ord("\n"), '08b'))
-            f.write(''.join(format(ord(i), '08b') for i in l))
-            #f.write(format(ord("\n"), '08b'))
-        f.write(''.join(format(ord(i), '08b') for i in "END COMPILATION EVENT\t"))
-        f.write(''.join(format(ord(i), '08b') for i in today))
-        f.write(format(ord("\t"), '08b'))
-        f.write(''.join(format(ord(i), '08b') for i in current_time))
-        f.write(format(ord("\n"), '08b'))
+            f.write(b"\n")
+            st = bytes(l, encoding = 'utf-8')
+            f.write(st)
+        f.write(b"END COMPILATION EVENT")
+        st = bytes(today, encoding='utf-8')
+        f.write(st)
+        f.write(b"\t")
+        st = bytes(current_time, encoding='utf-8')
+        f.write(st)
+        f.write(b"\n")
         f.close()
         text = editwin.text
         text.tag_remove("ERROR", "1.0", "end")
@@ -147,11 +149,11 @@ class ScriptBinding:
             msg = getattr(value, 'msg', '') or value or "<no detail available>"
             lineno = getattr(value, 'lineno', '') or 1
             offset = getattr(value, 'offset', '') or 0
-            f = open(clean_file, "a")
-            #f.write(encrypt("Error message before compilation:", 17))
-            f.write(''.join(format(ord(i), '08b') for i in "Error message before compilation:"))
-            f.write(format(ord("\n"), '08b'))
-            f.write(''.join(format(ord(i), '08b') for i in msg))
+            f = open(clean_file, "ab")
+            f.write(b"Error message before compilation:")
+            f.write(b"\n")
+            st = bytes(msg, encoding='utf-8')
+            f.write(st)
             f.close()
             if offset == 0:
                 lineno += 1  #mark end of offending line
