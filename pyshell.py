@@ -1332,16 +1332,17 @@ class PyShell(OutputWindow):
             if s.find("RESTART") > -1:
                 self.clean_file = s.split()[2][:-2] + "bin"
                 f = open(self.clean_file, "ab")
-                #f.write(b"{}".format(current_time))
                 f.write(b"Output:\n")
                 f.close()
-            #else:
-                #if "default" in self.clean_file:
-                #    pass
-                #else:
-                #f = open(self.clean_file, "ab")
-                #f.write(b"{}".format(s))
-                #f.close()
+            else:
+                if "default" in self.clean_file:
+                    pass
+                else:
+                    f = open(self.clean_file, "ab")
+                    st = bytes(s, encoding='utf-8')
+                    f.write(st)
+                    #f.write(b"\n")
+                    f.close()
 
             self.text.mark_gravity("iomark", "right")
             count = OutputWindow.write(self, s, tags, "iomark")
