@@ -1,6 +1,9 @@
 #! /usr/bin/env python3
 
 import sys
+from pathlib import Path
+
+
 if __name__ == "__main__":
     sys.modules['idlelib.pyshell'] = sys.modules['__main__']
 
@@ -895,7 +898,10 @@ class PyShell(OutputWindow):
             flist = PyShellFileList(root)
 
         OutputWindow.__init__(self, flist, None, None)
-        self.clean_file = "/Users/anshul/Documents/default_logging.bin"
+        path = str(Path(__file__).parent)
+        clean_path = path + "default_logging.bin"
+
+        self.clean_file = clean_path #"/Users/anshul/Documents/default_logging.bin"
 
         self.usetabs = True
         # indentwidth must be 8 when using tabs.  See note in EditorWindow:
@@ -1341,7 +1347,6 @@ class PyShell(OutputWindow):
                     f = open(self.clean_file, "ab")
                     st = bytes(s, encoding='utf-8')
                     f.write(st)
-                    #f.write(b"\n")
                     f.close()
 
             self.text.mark_gravity("iomark", "right")
