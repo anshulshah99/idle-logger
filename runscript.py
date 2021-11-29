@@ -37,7 +37,7 @@ by Format->Untabify Region and specify the number of columns used by each tab.
 
 def encrypt(text, s):
     result = ""
-    alphabet = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWYZ'
+    alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
     # traverse text
     for i in range(len(text)):
@@ -127,16 +127,16 @@ class ScriptBinding:
         clean_file = filename[:-2] + "bin"
         f = open(clean_file, "ab")
         f.write(b"\n")
-        f.write(b"START COMPILATION EVENT")
+        f.write(encrypt("START COMPILATION EVENT", 17).encode('utf-8'))
         for l in lines[:-1]:
             f.write(b"\n")
-            st = bytes(l, encoding = 'utf-8')
+            st = bytes(encrypt(l, 17), encoding = 'utf-8')
             f.write(st)
-        f.write(b"END COMPILATION EVENT\n")
-        st = bytes(today, encoding='utf-8')
+        f.write(encrypt("END COMPILATION EVENT\n", 17).encode('utf-8'))
+        st = bytes(encrypt(today, 17), encoding='utf-8')
         f.write(st)
         f.write(b"\t")
-        st = bytes(current_time, encoding='utf-8')
+        st = bytes(encrypt(current_time, 17), encoding='utf-8')
         f.write(st)
         f.write(b"\n")
         f.close()
@@ -150,9 +150,9 @@ class ScriptBinding:
             lineno = getattr(value, 'lineno', '') or 1
             offset = getattr(value, 'offset', '') or 0
             f = open(clean_file, "ab")
-            f.write(b"Error message before compilation:")
+            f.write(encrypt("Error message before compilation:", 17).encode('utf-8'))
             f.write(b"\n")
-            st = bytes(msg, encoding='utf-8')
+            st = bytes(encrypt(msg, 17), encoding='utf-8')
             f.write(st)
             f.close()
             if offset == 0:

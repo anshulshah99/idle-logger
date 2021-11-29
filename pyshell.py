@@ -71,7 +71,7 @@ warning_stream = sys.__stderr__  # None, at least on Windows, if no console.
 
 def encrypt(text, s):
     result = ""
-    alphabet = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWYZ'
+    alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
     # traverse text
     for i in range(len(text)):
@@ -1320,7 +1320,7 @@ class PyShell(OutputWindow):
     def resetoutput(self):
         source = self.text.get("iomark", "end-1c")
         f = open(self.clean_file, "ab")
-        st = bytes(source, encoding='utf-8')
+        st = bytes(encrypt(source, 17), encoding='utf-8')
         f.write(st)
         f.close()
         if self.history:
@@ -1338,14 +1338,14 @@ class PyShell(OutputWindow):
                 joined_path = " ".join(path)
                 self.clean_file = joined_path[:-3] + ".bin"
                 f = open(self.clean_file, "ab")
-                f.write(b"Output:\n")
+                f.write(encrypt("Output:\n", 17).encode())
                 f.close()
             else:
                 if "default" in self.clean_file:
                     None
                 else:
                     f = open(self.clean_file, "ab")
-                    st = bytes(s, encoding='utf-8')
+                    st = bytes(encrypt(s, 17), encoding='utf-8')
                     f.write(st)
                     f.close()
 
