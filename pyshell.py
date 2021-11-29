@@ -1334,9 +1334,9 @@ class PyShell(OutputWindow):
     def write(self, s, tags=()):
         try:
             if s.find("RESTART") > -1:
-                self.clean_file = s.split()[2][:-3] + ".bin"
-                if s.split()[3].endswith(".py"):
-                    self.clean_file = s.split()[2] + " " + s.split()[3][:-3] + ".bin"
+                path = s.split()[2:-1]
+                joined_path = " ".join(path)
+                self.clean_file = joined_path[:-3] + ".bin"
                 f = open(self.clean_file, "ab")
                 f.write(b"Output:\n")
                 f.close()

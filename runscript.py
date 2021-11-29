@@ -132,7 +132,7 @@ class ScriptBinding:
             f.write(b"\n")
             st = bytes(l, encoding = 'utf-8')
             f.write(st)
-        f.write(b"END COMPILATION EVENT\t")
+        f.write(b"END COMPILATION EVENT\n")
         st = bytes(today, encoding='utf-8')
         f.write(st)
         f.write(b"\t")
